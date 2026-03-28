@@ -1,1 +1,45 @@
-venv
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+.venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# App specific
+FRA_AI_Data/app/static/plots/*.png
+FRA_AI_Data/reports/*.pdf
+FRA_AI_Data/data/processed/*.csv
+FRA_AI_Data/data/test_upload*.csv
+
+# Vercel
+.vercel

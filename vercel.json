@@ -6,6 +6,10 @@
       "config": {
         "maxLambdaSize": "15mb"
       }
+    },
+    {
+      "src": "FRA_AI_Data/app/static/",
+      "use": "@vercel/static"
     }
   ],
   "routes": [

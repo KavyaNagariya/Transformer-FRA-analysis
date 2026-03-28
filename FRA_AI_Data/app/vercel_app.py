@@ -22,8 +22,8 @@ import numpy as np
 
 app = Flask(
     __name__,
-    template_folder="templates",
-    static_folder="static",
+    template_folder=os.path.join(os.path.dirname(__file__), "templates"),
+    static_folder=os.path.join(os.path.dirname(__file__), "static"),
     static_url_path="/static",
 )
 
