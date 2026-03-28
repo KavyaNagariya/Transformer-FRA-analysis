@@ -9,9 +9,25 @@ import sys
 import tempfile
 from datetime import datetime
 
-from flask import Flask, request, jsonify, render_template, send_file, abort
+from flask import (
+    Flask,
+    request,
+    jsonify,
+    render_template,
+    send_file,
+    abort,
+    send_from_directory,
+)
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if os.environ.get("VERCEL"):
+    BASE_DIR = "/var/task/FRA_AI_Data"
+    STATIC_FOLDER = os.path.join(BASE_DIR, "app", "static")
+    TEMPLATE_FOLDER = os.path.join(BASE_DIR, "app", "templates")
+else:
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    STATIC_FOLDER = os.path.join(os.path.dirname(__file__), "static")
+    TEMPLATE_FOLDER = os.path.join(os.path.dirname(__file__), "templates")
+
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
@@ -22,18 +38,48 @@ import numpy as np
 
 app = Flask(
     __name__,
-    template_folder=os.path.join(os.path.dirname(__file__), "templates"),
-    static_folder=os.path.join(os.path.dirname(__file__), "static"),
+    template_folder=TEMPLATE_FOLDER,
+    static_folder=STATIC_FOLDER,
     static_url_path="/static",
 )
 
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 app.config["UPLOAD_FOLDER"] = "/tmp"
 
-PLOT_FOLDER = "/tmp/plots"
+if os.environ.get("VERCEL"):
+    PLOT_FOLDER = "/tmp/plots"
+else:
+    PLOT_FOLDER = os.path.join(STATIC_FOLDER, "plots")
 REPORT_FOLDER = "/tmp/reports"
 os.makedirs(PLOT_FOLDER, exist_ok=True)
 os.makedirs(REPORT_FOLDER, exist_ok=True)
+
+
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    return send_from_directory(STATIC_FOLDER, filename)
+
+
+@app.route("/static/css/<path:filename>")
+def serve_css(filename):
+    return send_from_directory(os.path.join(STATIC_FOLDER, "css"), filename)
+
+
+@app.route("/static/js/<path:filename>")
+def serve_js(filename):
+    return send_from_directory(os.path.join(STATIC_FOLDER, "js"), filename)
+
+
+@app.route("/static/images/<path:filename>")
+def serve_images(filename):
+    return send_from_directory(os.path.join(STATIC_FOLDER, "images"), filename)
+
+
+@app.route("/static/plots/<path:filename>")
+def serve_plots(filename):
+    if os.environ.get("VERCEL"):
+        return send_from_directory("/tmp/plots", filename)
+    return send_from_directory(os.path.join(STATIC_FOLDER, "plots"), filename)
 
 
 @app.route("/")
